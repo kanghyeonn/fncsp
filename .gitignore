@@ -1,0 +1,106 @@
+# ============================
+# Python 기본 설정
+# ============================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 가상환경
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# 패키지/빌드 관련
+build/
+dist/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+# PyInstaller builds are stored in the /dist and /build folders above
+# 추가적으로 임시 spec 파일도 무시
+*.manifest
+*.spec
+
+# pip 환경 설정
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ============================
+# PyCharm / JetBrains 관련
+# ============================
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# ============================
+# 환경 변수 및 설정 파일
+# ============================
+.env
+.env.*
+*.env.local
+*.env.dev
+*.env.prod
+.DS_Store
+
+# ============================
+# 로그 / 임시 파일
+# ============================
+*.log
+*.pot
+*.pyproj
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+
+# ============================
+# Jupyter Notebook
+# ============================
+.ipynb_checkpoints
+*.ipynb_checkpoints
+
+# ============================
+# OS 관련
+# ============================
+Thumbs.db
+Desktop.ini
+.DS_Store
+Icon?
+
+# ============================
+# mypy / pytest / coverage
+# ============================
+.mypy_cache/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# ============================
+# 기타 도구
+# ============================
+/.vscode/
+*.code-workspace
+.cache/
+logs/
+
+# 테스트 결과값
+data/
+*.json
+ test.*
