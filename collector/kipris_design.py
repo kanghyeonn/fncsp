@@ -176,5 +176,5 @@ if __name__ == "__main__":
     except Exception as e:
         exit_message = f"프로그램 예외 종료 : {e}"
     finally:
-        send_naver_alert(email, email, password, f"KIPRIS_UTILITY 프로그램 종료 됨 : {exit_message}")
+        send_naver_alert(email, email, password, f"KIPRIS_DESIGN 프로그램 종료 됨 : {exit_message}")
 

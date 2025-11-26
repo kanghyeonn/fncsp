@@ -8,7 +8,7 @@ import random
 import re
 from db.es import *
 from db.mysql import *
-from alter import send_naver_alert
+from collector.alter import send_naver_alert
 import datetime
 from tqdm import tqdm
 

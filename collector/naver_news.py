@@ -10,7 +10,7 @@ from db.mysql import *
 from datetime import datetime, timedelta
 
 try:
-    from alter import send_naver_alert
+    from collector.alter import send_naver_alert
 except ImportError:
     print("collector.alter 모듈을 찾을 수 없습니다.")
 
