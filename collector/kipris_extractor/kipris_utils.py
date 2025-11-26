@@ -69,9 +69,8 @@ def get_section_title(section: WebElement) -> str | None:
 # kipris 접속 함수
 def open_browser(category: str) -> WebDriver:
     opts = uc.ChromeOptions()
-    # opts.add_argument("--headless=new")
+    opts.add_argument("--headless=new")
 
-    """
     # 우분투 환경
     opts.add_argument("--no-sandbox")  # root 환경 / Docker 환경에서 필수
     opts.add_argument("--disable-dev-shm-usage")  # /dev/shm 공간 부족 방지
@@ -81,7 +80,6 @@ def open_browser(category: str) -> WebDriver:
     opts.add_argument("--single-process")  # 일부 환경에서 안정성 증가
     opts.add_argument("--disable-infobars")
     opts.add_argument("--disable-extensions")
-    """
 
     opts.add_argument("--start-maximized")
     opts.add_argument("--disable-popup-blocking")
