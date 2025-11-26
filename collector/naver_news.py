@@ -449,6 +449,9 @@ def main():
                         news.extend(news_attrs)
                         start += 10
 
+                    if start > 1000:
+                        break
+
                 tqdm.write(f"\n뉴스 개수 : {num}")  # 들여쓰기 수정 (try 블록 안)
 
                 # ES 적재 시 예외 처리 추가

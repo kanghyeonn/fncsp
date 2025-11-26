@@ -52,7 +52,7 @@ def main():
     es = None
 
     try:
-        driver = open_browser("patent", "patent")
+        driver = open_browser("patent")
         try:
             # elasticsearch 연결
             es = get_es_conn()

@@ -71,7 +71,7 @@ def save_results_to_json(filename: str, comp_name: str, result: list):
 def main():
     es = None
     try:
-        driver = open_browser("patent", "utility")
+        driver = open_browser("patent")
         # elasticsearch 연결
         try:
             es = get_es_conn()
