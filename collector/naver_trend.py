@@ -203,7 +203,7 @@ def main():
 # ======================================================
 if __name__ == "__main__":
     email = os.getenv("EMAIL")
-    password = os.getenv("APP_PW")
+    password = os.getenv("PASSWORD")
     exit_message = "N/A"
     try:
         main()

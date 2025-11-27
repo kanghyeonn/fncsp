@@ -108,34 +108,34 @@ def main():
 
                 if total == 0:
                     print(f"{clean_comp_name} - 실용신안 : 검색 결과 없음")
-                    continue
+                    # continue
+                else:
+                    sort_by_application_an(driver)
+                    time.sleep(1)
 
-                sort_by_application_an(driver)
-                time.sleep(1)
+                    current_page = 1
+                    total_pages = int((total / 30) + 1)
 
-                current_page = 1
-                total_pages = int((total / 30) + 1)
+                    while current_page <= total_pages:
+                        has_result_flag, result_cards = has_result(driver)
 
-                while current_page <= total_pages:
-                    has_result_flag, result_cards = has_result(driver)
+                        for card in result_cards:
+                            # 중복 확인
+                            recent_utility_an = card.find_element(By.CLASS_NAME, "txt").text.strip()
+                            print(recent_utility_an)
+                            an = re.sub(r'\((.*?)\)', "", recent_utility_an)
+                            dup = get_application_an(es, "kipris_utility", biz_no, an)
 
-                    for card in result_cards:
-                        # 중복 확인
-                        recent_utility_an = card.find_element(By.CLASS_NAME, "txt").text.strip()
-                        print(recent_utility_an)
-                        an = re.sub(r'\((.*?)\)', "", recent_utility_an)
-                        dup = get_application_an(es, "kipris_utility", biz_no, an)
+                            if dup:
+                                tqdm.write(f"{comp_name} : 중복")
+                                raise DuplicateError
 
-                        if dup:
-                            tqdm.write(f"{comp_name} : 중복")
-                            raise DuplicateError
+                            open_card(driver, card)
+                            utilities.append(extract_from_utility_details(card))
+                        if current_page < total_pages:
+                            go_next_page(driver)
 
-                        open_card(driver, card)
-                        utilities.append(extract_from_utility_details(card))
-                    if current_page < total_pages:
-                        go_next_page(driver)
-
-                    current_page += 1
+                        current_page += 1
 
                 # with open("patent_test.json", "w", encoding="utf-8") as f:
                 #     json.dump(result, f, ensure_ascii=False, indent=2)
