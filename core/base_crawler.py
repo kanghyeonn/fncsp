@@ -2,7 +2,7 @@ import traceback
 from abc import ABC, abstractmethod
 from typing import List, Dict, Optional
 from datetime import datetime
-from repositories.base import DataRepository
+from repositories.data_repository import DataRepository
 from services.notification import NotificationService
 
 class BaseCrawler(ABC):
