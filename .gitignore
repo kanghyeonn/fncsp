@@ -104,3 +104,5 @@ logs/
 data/
 test.*
 *.ipynb
+
+tests/

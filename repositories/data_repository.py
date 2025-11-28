@@ -2,8 +2,6 @@ from abc import ABC, abstractmethod
 from typing import List, Dict, Optional
 from datetime import datetime
 
-from numpy.lib._datasource import Repository
-
 
 class DataRepository:
     def __init__(self):
