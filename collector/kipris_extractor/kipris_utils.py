@@ -211,9 +211,3 @@ def open_card(driver:WebDriver, card:WebElement):
     except Exception as e:
         print("e : ", e)
         raise
-
-class DataInsertError(Exception):
-    pass
-
-class DuplicateError(Exception):
-    pass

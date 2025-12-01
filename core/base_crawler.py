@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import List, Dict, Optional, Any
 from datetime import datetime
 
-from collector.kipris_extractor.kipris_utils import DuplicateError
+from core.exceptions import CrawlerException, DuplicateError
 from repositories.data_repository import DataRepository
 from services.notification import NotificationService
 
