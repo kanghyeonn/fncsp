@@ -76,7 +76,7 @@ class DataRepository:
             success_count, errors = self._save_to_es(data_type, biz_no, data)
 
             if errors:
-                print(f"⚠️  일부 문서 저장 실패: {len(errors)}건")
+                print(f"일부 문서 저장 실패: {len(errors)}건")
 
             # 2. MySQL 체크 로그
             check_ok = self.mysql.update_check_log(biz_no, data_type, now)
