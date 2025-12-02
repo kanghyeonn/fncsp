@@ -29,7 +29,7 @@ class KiprisCrawler(BaseCrawler):
     def _setup(self) -> None:
         try:
             print(f"브라우저 시작 중 ({self.category})")
-            self.driver = webdriverManger.create_driver(self.category)
+            self.driver = WebDriverManager.create_driver(self.category)
             self.resources.append(self.driver)
 
             self.extractor = KiprisExtractorFactory.create(self.category)
@@ -45,8 +45,7 @@ class KiprisCrawler(BaseCrawler):
             self.repository.log_error(
                 "KiprisCrawler._setup",
                 data_type=self.data_type,
-                error_msg=error_msg
-
+                message=error_msg
             )
             raise ConnectionError(error_msg)
 
@@ -83,7 +82,7 @@ class KiprisCrawler(BaseCrawler):
             self.repository.log_error(
                 location="KiprisCrawler._process_company",
                 data_type=self.data_type,
-                error_msg=error_msg,
+                message=error_msg,
                 detail=traceback.format_exc()
             )
             raise
@@ -95,6 +94,50 @@ class KiprisCrawler(BaseCrawler):
     @abstractmethod
     def _is_duplicate(self, card, biz_no:str) -> bool:
         pass
+
+    def _crawl_pages(self, biz_no: str, comp_name:str) -> List[Dict]:
+        data = []
+
+        sort_by_applictaion_an(self.driver)
+        time.sleep(1)
+
+        total = self._get_total_count()
+        total_pages = self._calculate_pages(total)
+        current_page = 1
+
+        while current_page <= total_pages:
+            try:
+                has_result_flag, cards = has_result(self.driver)
+
+                if not has_result_flag:
+                    break
+
+                for card in cards:
+                    if self._is_duplicate(card, biz_no):
+                        tqdm.write(f" 중복 발견 : {comp_name}")
+
+                    open_card(self.driver, card)
+
+                    detail = self.extractor.extract(card)
+                    data.append(detail)
+
+                if current_page < total_pages:
+                    go_next_page(self.driver)
+                    time.sleep(1)
+
+                current_page += 1
+            except DuplicateError:
+                raise
+            except Exception as e:
+                self.repository.log_error(
+                    location="KiprisCrawler._cawl_pages",
+                    data_type=self.data_type,
+                    message=f"{current_page} 처리 실패 : {e}",
+                    detail=traceback.format_exc()
+                )
+                current_page += 1
+
+        return data
 
     def _get_total_count(self) -> int:
         return get_total_num(self.driver, self.category)
