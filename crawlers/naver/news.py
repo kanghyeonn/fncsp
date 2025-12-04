@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 from crawlers.naver.base import NaverCrawler
 from services.retry import backoff_with_db_logging
 
+
 class NewsCrawler(NaverCrawler):
     def __init__(self, period: int = 365):
         super().__init__("NAVER_NEWS", period)
@@ -25,14 +26,14 @@ class NewsCrawler(NaverCrawler):
                 search_url = self._get_search_url(comp_name, ceo_name, start)
                 tqdm.write(f" 페이지 {start//10 + 1} 수집 중")
 
-                news_urls = self._get_news_url(search_url)
+                # URL 목록 수집
+                news_urls = self._get_news_url_list(search_url)
 
-                news_articles = self._get_news_articles(news_urls, comp_name)
-                all_news.extend(news_articles)
-
+                # 결과 없으면 종료
                 if not news_urls:
                     break
 
+                # 뉴스 본문 수집
                 news_articles = self._get_news_articles(news_urls, comp_name)
                 all_news.extend(news_articles)
 
@@ -46,7 +47,8 @@ class NewsCrawler(NaverCrawler):
         return all_news
 
     def _get_search_url(self, comp_name: str, ceo_name: str, start: int) -> str:
-        BASE_URL = "https://www.naver.com/search.naver?"
+        """검색 URL 생성"""
+        BASE_URL = "https://search.naver.com/search.naver?"
 
         end_date = datetime.today().strftime("%Y.%m.%d")
         start_date = (datetime.today() - timedelta(days=self.period)).strftime("%Y.%m.%d")
@@ -67,14 +69,16 @@ class NewsCrawler(NaverCrawler):
 
         return search_url
 
-    @backoff_with_db_logging(max_tries=5, base_delay=2, data_type="NAVER_NEWS")
-    def _safe_get(self, url: str, timeout: int = 10) -> requests.Repsonse:
+    @backoff_with_db_logging(max_retries=5, base_delay=2, data_type="NAVER_NEWS")
+    def _safe_get(self, url: str, timeout: int = 10) -> requests.Response:
+        """재시도 포함 HTTP GET 요청"""
         return requests.get(url, timeout=timeout)
 
     def _get_news_url_list(self, search_url: str) -> List[str]:
+        """검색 결과에서 네이버 뉴스 URL 목록 추출"""
         try:
             response = self._safe_get(search_url, timeout=10)
-            soup = BeautifulSoup(response.text ,"html.parser")
+            soup = BeautifulSoup(response.text, "html.parser")
             time.sleep(2)
 
             news_list = soup.find("div", class_="group_news")
@@ -92,6 +96,7 @@ class NewsCrawler(NaverCrawler):
             return []
 
     def _get_news_articles(self, news_urls: List[str], comp_name: str) -> List[Dict]:
+        """뉴스 URL 목록에서 본문 추출"""
         articles = []
 
         for url in news_urls:
@@ -120,6 +125,7 @@ class NewsCrawler(NaverCrawler):
         return articles
 
     def _parse_general_news(self, url: str) -> Dict:
+        """일반 뉴스 파싱"""
         try:
             response = self._safe_get(url)
             soup = BeautifulSoup(response.text, "html.parser")
@@ -170,12 +176,13 @@ class NewsCrawler(NaverCrawler):
             self.repository.log_error(
                 location="NewsCrawler._parse_general_news",
                 data_type=self.data_type,
-                message="뉴스 파싱 실패 ({url}): {e}",
+                message=f"뉴스 파싱 실패 ({url}): {e}",
                 detail=traceback.format_exc()
             )
             return None
 
     def _parse_esports_news(self, url: str) -> Dict:
+        """e스포츠 뉴스 파싱"""
         try:
             BASE_URL = "https://m.sports.naver.com"
             response = self._safe_get(url)
@@ -230,12 +237,13 @@ class NewsCrawler(NaverCrawler):
             self.repository.log_error(
                 location="NewsCrawler._parse_esports_news",
                 data_type=self.data_type,
-                message="e스포츠 뉴스 파싱 실패 ({url}): {e}",
+                message=f"e스포츠 뉴스 파싱 실패 ({url}): {e}",
                 detail=traceback.format_exc()
             )
             return None
 
     def _parse_sports_enter_news(self, url: str) -> Dict:
+        """스포츠/엔터 뉴스 파싱"""
         try:
             response = self._safe_get(url)
             soup = BeautifulSoup(response.text, "html.parser")
@@ -294,12 +302,13 @@ class NewsCrawler(NaverCrawler):
             self.repository.log_error(
                 location="NewsCrawler._parse_sports_enter_news",
                 data_type=self.data_type,
-                message="스포츠/엔터 뉴스 파싱 실패 ({url}): {e}",
+                message=f"스포츠/엔터 뉴스 파싱 실패 ({url}): {e}",
                 detail=traceback.format_exc()
             )
             return None
 
     def _format_date(self, date_str: str) -> str:
+        """날짜 형식 변환"""
         try:
             # '오전'/'오후' → 'AM'/'PM' 변환
             s = date_str.strip()
@@ -321,6 +330,7 @@ class NewsCrawler(NaverCrawler):
             return None
 
     def _extract_reporter_from_content(self, content: str) -> str:
+        """본문에서 기자명 추출"""
         try:
             # "XXX 기자" 패턴 추출
             pattern = re.compile(r'([가-힣·]{2,30})\s*기자\b')
@@ -336,5 +346,11 @@ class NewsCrawler(NaverCrawler):
             return None
 
 
+def main():
+    """메인 실행 함수"""
+    crawler = NewsCrawler(period=365)
+    crawler.run()
 
 
+if __name__ == "__main__":
+    main()
