@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from crawlers.kipris.base import KiprisCrawler
 from extractors.utils import search_by_ap
 
-class DesignKiprisCrawler(KiprisCrawler):
+class DesignCrawler(KiprisCrawler):
     def __init__(self):
         super().__init__(
             category="design",
