@@ -1,16 +1,12 @@
 import os
 import requests
-import xmltodict
 import functools
 import time
 import random
 import json
 import re
 from tqdm import tqdm
-from db.mysql import *
 from datetime import datetime
-from dateutil import parser
-from db.es import *
 from urllib.parse import urlencode
 
 

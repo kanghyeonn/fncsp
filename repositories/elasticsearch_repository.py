@@ -11,7 +11,7 @@ class ElasticsearchRepository(BaseRepository):
         self.config = config or RepositoryConfig.get_instance()
         # connection
         self._es: Optional[Elasticsearch] = None
-        self._index_name = "source_Data"
+        self._index_name = "source_data"
 
     def connect(self):
         if self._is_connected:

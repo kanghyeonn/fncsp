@@ -8,22 +8,22 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import undetected_chromedriver as uc
 
-class WebDriverManger:
+class WebDriverManager:
 
     @staticmethod
     def create_driver(category: str) -> WebDriver:
         opts = uc.ChromeOptions()
 
         # 헤드리스 모드
-        opts.add_argument("--headless=new")
+        # opts.add_argument("--headless=new")
 
         # 우분투/Docker 환경 대응
-        opts.add_argument("--no-sandbox")
-        opts.add_argument("--disable-dev-shm-usage")
-        opts.add_argument("--disable-gpu")
-        opts.add_argument("--disable-software-rasterizer")
-        opts.add_argument("--remote-debugging-port=9222")
-        opts.add_argument("--single-process")
+        # opts.add_argument("--no-sandbox")
+        # opts.add_argument("--disable-dev-shm-usage")
+        # opts.add_argument("--disable-gpu")
+        # opts.add_argument("--disable-software-rasterizer")
+        # opts.add_argument("--remote-debugging-port=9222")
+        # opts.add_argument("--single-process")
 
         # 기타 옵션
         opts.add_argument("--start-maximized")
@@ -308,6 +308,15 @@ def get_section_title(section: WebElement) -> str:
         return normalize_title(title) if title else None
     except Exception:
         return None
+
+def click_detail_modal(driver):
+    try:
+        element = WebDriverWait(driver, 3).until(
+            EC.element_to_be_clickable((By.ID, "btnOpenSearchDetail"))
+        )
+        element.click()
+    except:
+        pass
 
 def js_click(driver: WebDriver, element: WebElement) -> None:
     driver.execute_script("arguments[0].click();", element)

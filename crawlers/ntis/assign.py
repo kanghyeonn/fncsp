@@ -168,11 +168,11 @@ class AssignCrawler(NtisCrawler):
         )
         result["ProjectTotalStart"] = self._format_date(
             self._safe_get(assign, "ProjectPeriod", "TotalStart"),
-            "%Y%m%d"
+            "%Y-%m-%d %H:%M:%S.%f"
         )
         result["ProjectTotalEnd"] = self._format_date(
             self._safe_get(assign, "ProjectPeriod", "TotalEnd"),
-            "%Y%m%d"
+            "%Y-%m-%d %H:%M:%S.%f"
         )
 
         # 기타 정보

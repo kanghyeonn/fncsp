@@ -1,4 +1,4 @@
-from collector.kipris_extractor.kipris_utils import *
+from before_refactoring.collector.kipris_extractor.kipris_utils import *
 
 """""
 ipc 번호 : list
@@ -126,17 +126,17 @@ def extract_patent_people_info(info_div):
     return data
 
 """
-forwardCitation(인용) : list
-forwardCitation.FCCountry(국가) : keyword
-forwardCitation.FCNumber(공고번호) : keyword
-forwardCitation.FCDate(공보일자) : date
-forwardCitation.FCTitle(발명의명칭) : text
-forwardCitation.FCIPC(IPC) : keyword
-backwardCitation(피인용) : list
-backwardCitation.BCNumber(출원번호) : keyword
-backwardCitation.BCDate(출원일자) : date
-backwardCitation.BCTitle(발명의명칭) : text
-backwardCitation.BCIPC(IPC) : keyword
+backwordCitation(인용) : list
+backwordCitation.FCCountry(국가) : keyword
+backwordCitation.FCNumber(공고번호) : keyword
+backwordCitation.FCDate(공보일자) : date
+backwordCitation.FCTitle(발명의명칭) : text
+backwordCitation.FCIPC(IPC) : keyword
+forwardCitation(피인용) : list
+forwardCitation.BCNumber(출원번호) : keyword
+forwardCitation.BCDate(출원일자) : date
+forwardCitation.BCTitle(발명의명칭) : text
+forwardCitation.BCIPC(IPC) : keyword
 """
 def extract_citations(info_div):
     def _parse_table_rows(table_el, expected_headers, mapping_table):
@@ -195,7 +195,7 @@ def extract_citations(info_div):
                 "발명의 명칭" : "FCTitle",
                 "IPC" : "FCIPC"
             }
-            result["ForwardCitation"] = _parse_table_rows(table, headers,field_name_mapping_table)
+            result["BackwardCitation"] = _parse_table_rows(table, headers,field_name_mapping_table)
         elif title == "피인용":
             headers = ["출원번호(일자)", "출원 연월일", "발명의 명칭", "IPC"]
             field_name_mapping_table = {
@@ -204,7 +204,7 @@ def extract_citations(info_div):
                 "발명의 명칭" : "BCTitle",
                 "IPC" : "BCIPC"
             }
-            result["BackwardCitation"] = _parse_table_rows(table, headers,field_name_mapping_table)
+            result["ForwardCitation"] = _parse_table_rows(table, headers,field_name_mapping_table)
 
     return result
 

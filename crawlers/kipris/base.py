@@ -11,7 +11,8 @@ from extractors.kipris.common import KiprisExtractorFactory
 from extractors.utils import (
     WebDriverManager,
     get_total_num,
-    sort_by_applictaion_an,
+    sort_by_application_an,
+    click_detail_modal,
     has_result,
     open_card,
     go_next_page
@@ -56,6 +57,9 @@ class KiprisCrawler(BaseCrawler):
         data = []
 
         try:
+            click_detail_modal(self.driver)
+            time.sleep(0.5)
+            
             self._search(biz_no)
             time.sleep(1)
 
@@ -98,7 +102,7 @@ class KiprisCrawler(BaseCrawler):
     def _crawl_pages(self, biz_no: str, comp_name:str) -> List[Dict]:
         data = []
 
-        sort_by_applictaion_an(self.driver)
+        sort_by_application_an(self.driver)
         time.sleep(1)
 
         total = self._get_total_count()

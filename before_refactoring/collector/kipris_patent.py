@@ -1,7 +1,4 @@
-from collector.kipris_extractor.kipris_patent_extractor import *
-from collector.alter import send_naver_alert
-from db.es import *
-from db.mysql import *
+from before_refactoring.collector.alter import send_naver_alert
 from tqdm import tqdm
 import time
 import os

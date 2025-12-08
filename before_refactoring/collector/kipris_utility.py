@@ -1,9 +1,6 @@
-from collector.kipris_extractor.kipris_utility_extractor import *
-from db.es import *
-from db.mysql import *
 from tqdm import tqdm
 from datetime import datetime
-from collector.alter import send_naver_alert
+from before_refactoring.collector.alter import send_naver_alert
 import os
 import json
 import time

@@ -1,7 +1,4 @@
-from collector.kipris_extractor.kipris_design_extractor import *
-from collector.alter import send_naver_alert
-from db.es import *
-from db.mysql import *
+from before_refactoring.collector.alter import send_naver_alert
 from tqdm import tqdm
 import time
 import json
@@ -9,20 +6,18 @@ import json
 
 def search_by_ap(driver: WebDriver, comp_name: str):
     try:
-        # 지식재산정보 상세검색창 선택
         modal_search_detail = driver.find_element(By.ID, "modalSearchDetail")
 
-        search_box = modal_search_detail.find_element(By.ID, "sd010201_g07_text_01")
+        search_box = modal_search_detail.find_element(By.ID, "sd010301_g07_text_01")
         driver.execute_script("arguments[0].value = arguments[1];", search_box, comp_name)
 
-        # 검색하기 버튼 클릭
         button = driver.find_element(By.CSS_SELECTOR, "button.btn-search[data-lang-id='adsr.search']")
         button.click()
     except Exception as e:
         print("search_by_ap : ", e)
 
 
-def extract_from_design_details(card: WebElement) -> dict:
+def extract_from_trademark_details(card: WebDriver):
     info_dict = {}
     wait = WebDriverWait(card, 10)
     info_container = wait.until(
@@ -40,8 +35,6 @@ def extract_from_design_details(card: WebElement) -> dict:
 
     info_dict['InventionTitle'] = invention_title
 
-    skip_titles = ["대리인"]
-    title_count = {}
     section_blocks = info_container.find_elements(By.CLASS_NAME, "tab-section-01")
 
     for section_block in section_blocks:
@@ -51,17 +44,16 @@ def extract_from_design_details(card: WebElement) -> dict:
             if not title:
                 continue
 
-            title_count[title] = title_count.get(title, 0) + 1
-            if title in skip_titles and title_count[title] == 2:
-                continue
-
             if title == "서지정보":
-                info_dict.update(extract_design_bibliography(section_block))
-            elif title in ["인명정보", "창작자", "대리인"]:
-                info_dict.update(extract_design_people_info(section_block, title))
+                info_dict.update(extract_trademark_bibliography(section_block))
+            elif title == "인명정보":
+                info_dict.update(extract_trademark_people_info(section_block))
+            elif title == "도형분류비엔나코드":
+                info_dict.update(extract_trademark_vienna(section_block))
         except Exception as e:
             error_detail = traceback.format_exc()
-            insert_error_log("Extract from design details", "KIPRIS_DESIGN", f"{title} 처리중 에러 발생 : {e}", error_detail)
+            insert_error_log("Extract from trademark details", "KIPRIS_TRADEMARK", f"{title} 처리중 에러 발생 : {e}",
+                             error_detail)
 
     return info_dict
 
@@ -70,13 +62,13 @@ def main():
     es = None
 
     try:
-        driver = open_browser("design")
+        driver = open_browser("trademark")
         try:
             # elasticsearch 연결
             es = get_es_conn()
         except Exception as e:
             error_detail = traceback.format_exc()
-            insert_error_log("Elasticsearch connection", "KIPRIS_DESIGN", f"Elasticsearch 연결 실패 : {e}", error_detail)
+            insert_error_log("Elasticsearch connection", "KIPRIS_TRADEMARK", f"Elasticsearch 연결 실패 : {e}", error_detail)
             raise
 
         # try:
@@ -89,23 +81,23 @@ def main():
         with open(r"/home/bax/fncsp/db/final_results.json", "r", encoding="utf-8") as f:
             companies = json.load(f)
 
-        for idx, company in enumerate(tqdm(companies, desc='kipris_design 수집', unit="회사"), 1):
+        for idx, company in enumerate(tqdm(companies, desc='kipris_trademark 수집', unit="회사"), 1):
             biz_no = ""
             comp_name = ""
-            designs = []
+            trademarks = []
             now = datetime.now()
 
             try:
-                biz_no = company["BIZ_NO"]
+                biz_no = company['BIZ_NO']
                 comp_name = company['CMP_NM']
                 clean_comp_name = re.sub(r'\(.*?\)', '', comp_name)
-                driver.get("https://www.kipris.or.kr/khome/search/searchResult.do?tab=design")
+                driver.get("https://www.kipris.or.kr/khome/search/searchResult.do?tab=trademark")
                 time.sleep(1)
                 search_by_ap(driver, biz_no)
-                total = get_total_num(driver, "design")
+                total = get_total_num(driver, "trademark")
 
                 if total == 0:
-                    print(f"{clean_comp_name} - 디자인 : 검색 결과 없음")
+                    print(f"{clean_comp_name} - 상표 : 검색 결과 없음")
                     # continue
                 else:
                     sort_by_application_an(driver)
@@ -119,48 +111,48 @@ def main():
 
                         for card in result_cards:
                             # 중복 확인
-                            recent_design_an = card.find_element(By.CSS_SELECTOR, "button.tit.under").text.strip()
-                            print(recent_design_an)
-                            an = re.sub(r'\((.*?)\)', "", recent_design_an)
-                            dup = get_application_an(es, "kipris_design", biz_no, an)
+                            recent_trademark_an = card.find_element(By.CSS_SELECTOR, "button.tit.under").text.strip()
+                            print(recent_trademark_an)
+                            an = re.sub(r'\((.*?)\)', "", recent_trademark_an)
+                            dup = get_application_an(es, "kipris_trade", biz_no, an)
 
                             if dup:
                                 tqdm.write(f"{comp_name} : 중복")
                                 raise DuplicateError
 
                             open_card(driver, card)
-                            designs.append(extract_from_design_details(card))
+                            trademarks.append(extract_from_trademark_details(card))
                         if current_page < total_pages:
                             go_next_page(driver)
 
                         current_page += 1
-                # with open("designs_test.json", "w", encoding="utf-8") as f:
-                #     json.dump(designs, f, ensure_ascii=False, indent=2)
+                # with open("trademarks_test.json", "w", encoding="utf-8") as f:
+                #     json.dump(trademarks, f, ensure_ascii=False, indent=2)
 
                 try:
-                    insert_kipris_design(es, designs, biz_no)
-                    insert_check_log(biz_no, "KIPRIS_DESIGN", now)
-                    insert_cmp_data_log(biz_no, "KIPRIS_DESIGN", len(designs), now)
-                    print(f"{comp_name} - {len(designs)}건 저장 완료")
+                    insert_kipris_trade(es, trademarks, biz_no)
+                    insert_check_log(biz_no, "KIPRIS_TRADEMARK", now)
+                    insert_cmp_data_log(biz_no, "KIPRIS_TRADEMARK", len(trademarks), now)
+                    print(f"{comp_name} - {len(trademarks)}건 저장 완료")
                 except Exception as e:
                     error_detail = traceback.format_exc()
-                    insert_error_log("Insert data", "KIPRIS_DESIGN", f"데이터 삽입 실패({biz_no}) : {e}", error_detail)
+                    insert_error_log("Insert data", "KIPRIS_TRADEMARK", f"데이터 삽입 실패({biz_no}) : {e}", error_detail)
             except DuplicateError as e:
-                if designs:
-                    insert_kipris_design(es, designs, biz_no)
-                    insert_check_log(biz_no, "KIPRIS_DESIGN", now)
-                    insert_cmp_data_log(biz_no, "KIPRIS_DESIGN", len(designs), now)
-                    print(f"{comp_name} - {len(designs)}건 저장 완료")
+                if trademarks:
+                    insert_kipris_trade(es, trademarks, biz_no)
+                    insert_check_log(biz_no, "KIPRIS_TRADEMARK", now)
+                    insert_cmp_data_log(biz_no, "KIPRIS_TRADEMARK", len(trademarks), now)
+                    print(f"{comp_name} - {len(trademarks)}건 저장 완료")
                 else:
                     continue
             except DataInsertError as e:
                 raise
             except Exception as e:
                 error_detail = traceback.format_exc()
-                insert_error_log("Process company", "KIPRIS_DESIGN", f"{comp_name}({biz_no}) 기업 처리중 오류 발생 : {e}",
+                insert_error_log("Process company", "KIPRIS_TRADEMARK", f"{comp_name}({biz_no}) 기업 처리중 오류 발생 : {e}",
                                  error_detail)
     except Exception as e:
-        insert_error_log("Open Browser", "KIPRIS_DESIGN", "Cannot Open Browser", traceback.format_exc())
+        insert_error_log("Open Browser", "KIPRIS_TRADEMARK", "Cannot Open Browser", traceback.format_exc())
     finally:
         if es:
             es.close()
@@ -176,5 +168,4 @@ if __name__ == "__main__":
     except Exception as e:
         exit_message = f"프로그램 예외 종료 : {e}"
     finally:
-        send_naver_alert(email, email, password, f"KIPRIS_DESIGN 프로그램 종료 됨 : {exit_message}")
-
+        send_naver_alert(email, email, password, f"KIPRIS_TRADEMARK 프로그램 종료 됨 : {exit_message}")

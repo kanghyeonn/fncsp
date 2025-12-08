@@ -1,4 +1,4 @@
-from collector.kipris_extractor.kipris_utils import *
+from before_refactoring.collector.kipris_extractor.kipris_utils import *
 
 """
 registerStatus(법적상태) : text

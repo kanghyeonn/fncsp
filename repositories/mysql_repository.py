@@ -200,7 +200,7 @@ class MySQLRepository(BaseRepository):
             cursor = conn.cursor()
 
             sql = """
-            INSERT INTO error_log (DATA_TYPE, ERROR_MSG, CREATED_AT)
+            INSERT INTO error_log (DATA_TYPE, ERROR_LOG, CREATED_AT)
             VALUES (%s, %s, %s)
             """
 

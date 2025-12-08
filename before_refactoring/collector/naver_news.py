@@ -4,13 +4,12 @@ from bs4 import BeautifulSoup
 from tqdm import tqdm
 import urllib.parse
 import re
-from db.es import get_es_conn, insert_naver_news
+from before_refactoring.db.es import get_es_conn, insert_naver_news
 import functools
-from db.mysql import *
 from datetime import datetime, timedelta
 
 try:
-    from collector.alter import send_naver_alert
+    from before_refactoring.collector.alter import send_naver_alert
 except ImportError:
     print("collector.alter 모듈을 찾을 수 없습니다.")
 
