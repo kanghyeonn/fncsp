@@ -47,6 +47,11 @@ crawler-system/
 │       ├── rnd_paper.py         # 연구보고서
 │       └── org_info.py          # 수행기관 정보
 │
+│
+├── make_comp_data              # mysql 데이터를 삽입
+│   ├── insert_data_to_cmp_financial.py # 재무데이터 테이블 
+│   └── insert_data_to_fs_account_code.py # 재무데이터 코드명 매핑 테이블
+│
 ├── repositories/                  # 데이터 저장소
 │   ├── base_repository.py        # 저장소 베이스
 │   ├── data_repository.py        # 데이터 저장소 (Facade)
