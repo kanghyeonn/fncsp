@@ -11,7 +11,8 @@ class ElasticsearchRepository(BaseRepository):
         self.config = config or RepositoryConfig.get_instance()
         # connection
         self._es: Optional[Elasticsearch] = None
-        self._index_name = "source_data"
+        # 인덱스 이름
+        self._index_name = "source_data_dic"
 
     def connect(self):
         if self._is_connected:
@@ -65,7 +66,7 @@ class ElasticsearchRepository(BaseRepository):
                 "_index": self._index_name,
                 "_source": {
                     "BusinessNum": biz_no,
-                    "DataType": data_type,
+                    "DataType": data_type.lower(),
                     "SearchDate": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
                     "SearchID": "autoSystem",
                     "Data": None
@@ -76,7 +77,7 @@ class ElasticsearchRepository(BaseRepository):
                 "_index": self._index_name,
                 "_source": {
                     "BusinessNum": biz_no,
-                    "DataType": data_type,
+                    "DataType": data_type.lower(),
                     "SearchDate": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
                     "SearchID": "autoSystem",
                     "Data": doc
@@ -112,7 +113,7 @@ class ElasticsearchRepository(BaseRepository):
 
         document = {
             "BusinessNum": biz_no,
-            "DataType": data_type,
+            "DataType": data_type.lower(),
             "SearchDate": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
             "SearchID": "autoSystem",
             "Data": data

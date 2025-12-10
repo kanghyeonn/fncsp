@@ -176,41 +176,106 @@ def has_result(driver: WebDriver) -> Tuple[bool, List[WebElement]]:
         print(f"결과 확인 실패: {e}")
         return False, []
 
+# def open_card(driver: WebDriver, card: WebElement) -> None:
+#     try:
+#         wait = WebDriverWait(driver, 10)
+#
+#         # 카드가 클릭 가능할 때까지 대기
+#         wait.until(EC.element_to_be_clickable(card))
+#
+#         # 카드를 화면 중앙으로 스크롤
+#         driver.execute_script(
+#             "arguments[0].scrollIntoView({block: 'center'});",
+#             card
+#         )
+#         time.sleep(0.5)
+#
+#         # 링크 버튼 찾기
+#         btn_link = card.find_element(By.CSS_SELECTOR, "button.link.under")
+#
+#         # 클릭 시도 (일반 클릭 -> JavaScript 클릭)
+#         try:
+#             btn_link.click()
+#         except Exception:
+#             driver.execute_script("arguments[0].click();", btn_link)
+#
+#         # 상세 페이지 로딩 대기
+#         wait.until(
+#             EC.presence_of_element_located(
+#                 (By.CSS_SELECTOR, "#mainResultDetail .tab-section-01")
+#             )
+#         )
+#
+#         time.sleep(0.5)
+#
+#     except Exception as e:
+#         print(f"카드 열기 실패: {e}")
+#         raise
+
 def open_card(driver: WebDriver, card: WebElement) -> None:
+    """
+    카드를 클릭하여 상세 페이지 열기
+
+    Args:
+        driver: WebDriver 인스턴스
+        card: 클릭할 카드 WebElement
+
+    Raises:
+        Exception: 카드 열기 실패 시
+    """
     try:
         wait = WebDriverWait(driver, 10)
 
-        # 카드가 클릭 가능할 때까지 대기
+        # 1. 카드가 클릭 가능할 때까지 대기
         wait.until(EC.element_to_be_clickable(card))
 
-        # 카드를 화면 중앙으로 스크롤
+        # 2. 카드를 화면 중앙으로 스크롤
         driver.execute_script(
             "arguments[0].scrollIntoView({block: 'center'});",
             card
         )
-        time.sleep(0.5)
+        time.sleep(0.3)  # 스크롤 안정화
 
-        # 링크 버튼 찾기
+        # 3. 링크 버튼 찾기 및 클릭
         btn_link = card.find_element(By.CSS_SELECTOR, "button.link.under")
 
-        # 클릭 시도 (일반 클릭 -> JavaScript 클릭)
         try:
             btn_link.click()
         except Exception:
+            # 일반 클릭 실패 시 JavaScript 클릭
             driver.execute_script("arguments[0].click();", btn_link)
 
-        # 상세 페이지 로딩 대기
+        # 4. 상세 페이지 완전 로딩 대기
+        # 4-1. 메인 컨테이너 존재 확인
         wait.until(
             EC.presence_of_element_located(
-                (By.CSS_SELECTOR, "#mainResultDetail .tab-section-01")
+                (By.ID, "mainResultDetail")
             )
         )
 
-        time.sleep(0.5)
+        # 4-2. 데이터 컨테이너 존재 확인 (실제 데이터 영역)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, '//*[@id="mainResultDetail"]/div[2]/div[1]/div[1]')
+            )
+        )
+
+        # 4-3. 첫 번째 섹션 테이블이 실제로 보일 때까지 대기
+        wait.until(
+            EC.visibility_of_element_located(
+                (By.CSS_SELECTOR, "#mainResultDetail .tab-section-01 table")
+            )
+        )
+
+        # 4-4. 최소한의 추가 안정화 대기 (동적 콘텐츠 로딩 완료)
+        time.sleep(0.2)
+
+        print("✓ 카드 열기 완료")
 
     except Exception as e:
-        print(f"카드 열기 실패: {e}")
+        print(f"✗ 카드 열기 실패: {e}")
         raise
+
 
 def go_next_page(driver: WebDriver) -> None:
     try:
@@ -311,6 +376,7 @@ def get_section_title(section: WebElement) -> str:
 
 def click_detail_modal(driver):
     try:
+        driver.execute_script("window.scrollTo(0, 0);")
         element = WebDriverWait(driver, 3).until(
             EC.element_to_be_clickable((By.ID, "btnOpenSearchDetail"))
         )

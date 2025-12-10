@@ -66,7 +66,7 @@ class NewsCrawler(NaverCrawler):
             f"qdt=0&"
             f"start={start}"
         )
-
+        # print(search_url)
         return search_url
 
     @backoff_with_db_logging(max_retries=5, base_delay=2, data_type="NAVER_NEWS")

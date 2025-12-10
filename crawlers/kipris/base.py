@@ -57,6 +57,7 @@ class KiprisCrawler(BaseCrawler):
         data = []
 
         try:
+
             click_detail_modal(self.driver)
             time.sleep(0.5)
             
@@ -67,11 +68,9 @@ class KiprisCrawler(BaseCrawler):
 
             if total == 0:
                 tqdm.write(f" {clean_comp_name} 검색 결과 없음")
-                return
-
-            tqdm.write(f"{clean_comp_name} - {total}건 발견")
-
-            data = self._crawl_pages(biz_no, comp_name)
+            else:
+                tqdm.write(f"{clean_comp_name} - {total}건 발견")
+                data = self._crawl_pages(biz_no, comp_name)
 
             self._save_data(biz_no, data)
             tqdm.write(f" {clean_comp_name} - {len(data)}건 저장 완료")
@@ -121,8 +120,8 @@ class KiprisCrawler(BaseCrawler):
                         tqdm.write(f" 중복 발견 : {comp_name}")
 
                     open_card(self.driver, card)
-
                     detail = self.extractor.extract(card)
+                    print(detail)
                     data.append(detail)
 
                 if current_page < total_pages:
@@ -134,7 +133,7 @@ class KiprisCrawler(BaseCrawler):
                 raise
             except Exception as e:
                 self.repository.log_error(
-                    location="KiprisCrawler._cawl_pages",
+                    location="KiprisCrawler._crawl_pages",
                     data_type=self.data_type,
                     message=f"{current_page} 처리 실패 : {e}",
                     detail=traceback.format_exc()

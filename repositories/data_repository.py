@@ -77,6 +77,7 @@ class DataRepository:
 
             if errors:
                 print(f"일부 문서 저장 실패: {len(errors)}건")
+                #print(errors)
 
             # 2. MySQL 체크 로그
             check_ok = self.mysql.update_check_log(biz_no, data_type, now)
@@ -157,7 +158,7 @@ class DataRepository:
 
     def check_duplicate(
             self,
-            index: str,
+            data_type: str,
             biz_no: str,
             key: str
     ) -> bool:
@@ -182,8 +183,8 @@ class DataRepository:
             "ntis_rnd_paper": "Data.ResearchPublicNo.keyword"
         }
 
-        field = field_mapping.get(index, "Data.ApplicationNumber")
-        return self.es.check_duplicate(index, biz_no, field, key)
+        field = field_mapping.get(data_type, "Data.ApplicationNumber")
+        return self.es.check_duplicate(data_type, biz_no, field, key)
 
     def log_error(
             self,

@@ -29,7 +29,7 @@ def get_es_conn():
 
 # 출원번호로 중복인지 확인하는 함수
 def get_application_an(es: Elasticsearch, data_type:str, biz_no:str, an:str) -> bool:
-    index_name = "source_data"
+    index_name = "source_data_test"
 
     query_body = {
         "query": {
@@ -67,7 +67,7 @@ def get_application_an(es: Elasticsearch, data_type:str, biz_no:str, an:str) -> 
 
 # 프로젝트 번호로 중복인지 확인하는 함수
 def get_project_no(es: Elasticsearch, data_type:str, biz_no:str, no:str) -> bool:
-    index_name = "source_data"
+    index_name = "source_data_test"
 
     query_body = {
         "query": {
@@ -105,7 +105,7 @@ def get_project_no(es: Elasticsearch, data_type:str, biz_no:str, no:str) -> bool
 
 # 보고서 등록번호로 중복인지 확인하는 함수
 def get_research_public_no(es: Elasticsearch, data_type:str, biz_no:str, no:str) -> bool:
-    index_name = "source_data"
+    index_name = "source_data_test"
 
     query_body = {
         "query": {
@@ -145,7 +145,7 @@ def get_research_public_no(es: Elasticsearch, data_type:str, biz_no:str, no:str)
 def insert_naver_news(es:Elasticsearch, news_attrs:list | None, business_num:str | None):
     if not news_attrs:
         actions = [{
-            "_index": "source_data",
+            "_index": "source_data_test",
             "_source": {
                 "BusinessNum": business_num,
                 "DataType": "naver_news",
@@ -156,7 +156,7 @@ def insert_naver_news(es:Elasticsearch, news_attrs:list | None, business_num:str
         }]
     else:
         actions = [{
-            "_index": "source_data",
+            "_index": "source_data_test",
             "_source": {
                 "BusinessNum": business_num,
                 "DataType": "naver_news",
@@ -172,7 +172,7 @@ def insert_naver_news(es:Elasticsearch, news_attrs:list | None, business_num:str
 def insert_kipris_patent(es:Elasticsearch, kipris_patent_attrs:list | None, business_num:str | None):
     if not kipris_patent_attrs:
         actions = [{
-            "_index": "source_data",
+            "_index": "source_data_test",
             "_source": {
                 "BusinessNum": business_num,
                 "DataType": "kipris_patent",
@@ -183,7 +183,7 @@ def insert_kipris_patent(es:Elasticsearch, kipris_patent_attrs:list | None, busi
         }]
     else:
         actions = [{
-            "_index": "source_data",
+            "_index": "source_data_test",
             "_source": {
                 "BusinessNum": business_num,
                 "DataType": "kipris_patent",
@@ -199,7 +199,7 @@ def insert_kipris_patent(es:Elasticsearch, kipris_patent_attrs:list | None, busi
 def insert_kipris_utility(es:Elasticsearch, kipris_patent_attrs:list | None, business_num:str | None):
     if not kipris_patent_attrs:
         actions = [{
-            "_index": "source_data",
+            "_index": "source_data_test",
             "_source": {
                 "BusinessNum": business_num,
                 "DataType": "kipris_utility",
@@ -210,7 +210,7 @@ def insert_kipris_utility(es:Elasticsearch, kipris_patent_attrs:list | None, bus
         }]
     else:
         actions = [{
-            "_index": "source_data",
+            "_index": "source_data_test",
             "_source": {
                 "BusinessNum": business_num,
                 "DataType": "kipris_utility",
@@ -225,7 +225,7 @@ def insert_kipris_utility(es:Elasticsearch, kipris_patent_attrs:list | None, bus
 def insert_kipris_design(es:Elasticsearch, kipris_design_attrs:list | None, business_num:str | None):
     if not kipris_design_attrs:
         actions = [{
-            "_index": "source_data",
+            "_index": "source_data_test",
             "_source": {
                 "BusinessNum": business_num,
                 "DataType": "kipris_design",
@@ -236,7 +236,7 @@ def insert_kipris_design(es:Elasticsearch, kipris_design_attrs:list | None, busi
         }]
     else:
         actions = [{
-            "_index": "source_data",
+            "_index": "source_data_test",
             "_source": {
                 "BusinessNum": business_num,
                 "DataType": "kipris_design",
@@ -251,7 +251,7 @@ def insert_kipris_design(es:Elasticsearch, kipris_design_attrs:list | None, busi
 def insert_kipris_trade(es:Elasticsearch, kipris_trademark_attrs:list | None, business_num:str | None):
     if not kipris_trademark_attrs:
         actions = [{
-            "_index": "source_data",
+            "_index": "source_data_test",
             "_source": {
                 "BusinessNum": business_num,
                 "DataType": "kipris_trade",
@@ -262,7 +262,7 @@ def insert_kipris_trade(es:Elasticsearch, kipris_trademark_attrs:list | None, bu
         }]
     else:
         actions = [{
-            "_index": "source_data",
+            "_index": "source_data_test",
             "_source": {
                 "BusinessNum": business_num,
                 "DataType": "kipris_trade",
@@ -277,7 +277,7 @@ def insert_kipris_trade(es:Elasticsearch, kipris_trademark_attrs:list | None, bu
 def insert_naver_trend(es:Elasticsearch, naver_trend: list | None, business_num:str | None):
     if not naver_trend:
         actions = [{
-            "_index": "source_data",
+            "_index": "source_data_test",
             "_source": {
                 "BusinessNum": business_num,
                 "DataType": "naver_trend",
@@ -288,7 +288,7 @@ def insert_naver_trend(es:Elasticsearch, naver_trend: list | None, business_num:
         }]
     else:
         actions = [{
-            "_index": "source_data",
+            "_index": "source_data_test",
             "_source": {
                 "BusinessNum": business_num,
                 "DataType": "naver_trend",
@@ -303,7 +303,7 @@ def insert_naver_trend(es:Elasticsearch, naver_trend: list | None, business_num:
 def insert_ntis_assign(es:Elasticsearch, ntis_assign: list | None, business_num:str | None):
     if not ntis_assign:
         actions = [{
-            "_index": "source_data",
+            "_index": "source_data_test",
             "_source": {
                 "BusinessNum": business_num,
                 "DataType": "ntis_assign",
@@ -314,7 +314,7 @@ def insert_ntis_assign(es:Elasticsearch, ntis_assign: list | None, business_num:
         }]
     else:
         actions = [{
-            "_index": "source_data",
+            "_index": "source_data_test",
             "_source": {
                 "BusinessNum": business_num,
                 "DataType": "ntis_assign",
@@ -329,7 +329,7 @@ def insert_ntis_assign(es:Elasticsearch, ntis_assign: list | None, business_num:
 def insert_ntis_org_info(es:Elasticsearch, ntis_org_info: dict | None, business_num:str | None):
     if not ntis_org_info:
         actions = [{
-            "_index": "source_data",
+            "_index": "source_data_test",
             "_source": {
                 "BusinessNum": business_num,
                 "DataType": "ntis_org_info",
@@ -340,7 +340,7 @@ def insert_ntis_org_info(es:Elasticsearch, ntis_org_info: dict | None, business_
         }]
     else:
         actions = [{
-            "_index": "source_data",
+            "_index": "source_data_test",
             "_source": {
                 "BusinessNum": business_num,
                 "DataType": "ntis_org_info",
@@ -355,7 +355,7 @@ def insert_ntis_org_info(es:Elasticsearch, ntis_org_info: dict | None, business_
 def insert_ntis_rnd_paper(es:Elasticsearch, ntis_rnd_paper: list | None, business_num:str | None):
     if not ntis_rnd_paper:
         actions = [{
-            "_index": "source_data",
+            "_index": "source_data_test",
             "_source": {
                 "BusinessNum": business_num,
                 "DataType": "ntis_rnd_paper",
@@ -366,7 +366,7 @@ def insert_ntis_rnd_paper(es:Elasticsearch, ntis_rnd_paper: list | None, busines
         }]
     else:
         actions = [{
-            "_index": "source_data",
+            "_index": "source_data_test",
             "_source": {
                 "BusinessNum": business_num,
                 "DataType": "ntis_rnd_paper",

@@ -18,10 +18,17 @@ class RepositoryConfig:
             self.es_id = os.getenv('ELASTICSEARCH_ID')
             self.es_password = os.getenv('ELASTICSEARCH_PASSWORD')
 
-            self.mysql_host = os.getenv('LOCAL_MYSQL_HOST')
-            self.mysql_user = os.getenv('LOCAL_MYSQL_USER')
-            self.mysql_password = os.getenv('LOCAL_MYSQL_PASSWORD')
-            self.mysql_database = os.getenv('LOCAL_MYSQL_DATABASE')
+            # fncsp db
+            # self.mysql_host = os.getenv('LOCAL_MYSQL_HOST')
+            # self.mysql_user = os.getenv('LOCAL_MYSQL_USER')
+            # self.mysql_password = os.getenv('LOCAL_MYSQL_PASSWORD')
+            # self.mysql_database = os.getenv('LOCAL_MYSQL_DATABASE')
+
+            # fncsp_dic db
+            self.mysql_host = os.getenv('DIC_MYSQL_HOST')
+            self.mysql_user = os.getenv('DIC_MYSQL_USER')
+            self.mysql_password = os.getenv('DIC_MYSQL_PASSWORD')
+            self.mysql_database = os.getenv('DIC_MYSQL_DATABASE')
 
             self._initialized = True
 

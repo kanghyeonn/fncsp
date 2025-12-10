@@ -4,6 +4,7 @@ KIPRIS 특허 데이터 추출기
 from typing import Dict, Optional
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.by import By
+import time
 
 from extractors.kipris.base_extractor import BasePatentExtractor
 
@@ -22,30 +23,43 @@ class PatentExtractor(BasePatentExtractor):
         Returns:
             추출된 데이터
         """
+        start_time = time.time()
+
         # 서지정보
         if self._title_contains(title, "서지정보", "bibliography"):
-            return self._extract_bibliography(section)
+            result = self._extract_bibliography(section)
+            elapsed = time.time() - start_time
+            return result
 
         # 인명정보
         elif self._title_contains(title, "인명정보", "people", "applicant", "inventor"):
-            return self._extract_patent_people_info(section)
+            result = self._extract_patent_people_info(section)
+            elapsed = time.time() - start_time
+            return result
 
         # 인용/피인용
         elif self._title_contains(title, "인용", "피인용", "citation", "cited"):
-            return self._extract_citations(section)
+            result = self._extract_citations(section)
+            elapsed = time.time() - start_time
+            return result
 
         # 패밀리정보
         elif self._title_contains(title, "패밀리정보", "family"):
-            return self._extract_family_info(section)
+            result = self._extract_family_info(section)
+            elapsed = time.time() - start_time
+            return result
 
         # 국가연구개발사업
         elif self._title_contains(title, "국가연구개발사업", "rnd", "research"):
-            return self._extract_national_rnd(section)
+            result = self._extract_national_rnd(section)
+            elapsed = time.time() - start_time
+            return result
 
         return None
 
     def _extract_bibliography(self, section: WebElement) -> Dict:
-        """서지정보 추출"""
+        """서지정보 추출 (디버깅)"""
+
         field_mapping = {
             "IPC": "IPCNumber",
             "CPC": "CPCNumber",
@@ -57,8 +71,11 @@ class PatentExtractor(BasePatentExtractor):
             "공개번호(일자)": ["OpenNumber", "OpenDate"]
         }
 
-        return self._extract_bibliography_with_date(section, field_mapping)
+        result = self._extract_bibliography_with_date(section, field_mapping)
 
+        return result
+
+    # 나머지 메서드들은 원본과 동일...
     def _extract_patent_people_info(self, section: WebElement) -> Dict:
         """인명정보 추출 (발명자 수 포함)"""
         result = {}

@@ -15,7 +15,7 @@ class TrademarkCrawler(KiprisCrawler):
         search_by_ap(self.driver, "sd010301_g07_text_01", biz_no)
 
     def _is_duplicate(self, card, biz_no: str) -> bool:
-        an_element = card.find_element(By.CLASS_NAME, "txt")
+        an_element = card.find_element(By.CSS_SELECTOR, "button.tit.under")
         an_text = an_element.text.strip()
 
         an = re.sub(r'\((.*?)\)', "", an_text).strip()
