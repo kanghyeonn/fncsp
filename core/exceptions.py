@@ -3,3 +3,4 @@ class DuplicateError(Exception):
 
 class CrawlerException(Exception):
     pass
+

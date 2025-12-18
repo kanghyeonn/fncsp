@@ -36,7 +36,7 @@ class WebDriverManager:
 
         try:
             driver = uc.Chrome(options=opts)
-            driver.implicitly_wait(10)
+            driver.implicitly_wait(1)
 
             # KIPRIS 사이트 접속
             url = f"https://www.kipris.or.kr/khome/search/searchResult.do?tab={category}"

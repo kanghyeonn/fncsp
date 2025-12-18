@@ -20,7 +20,7 @@ class BaseKiprisExtractor(ABC):
     def __init__(self):
         self.timeout = 3  # 백업용 타임아웃 (대부분 즉시 찾아짐)
 
-    def extract(self, driver: WebDriver) -> Dict:
+    def extract(self, driver: WebDriver | WebElement) -> Dict:
         """
         상세 페이지에서 전체 정보 추출
 

@@ -118,6 +118,7 @@ class KiprisCrawler(BaseCrawler):
                 for card in cards:
                     if self._is_duplicate(card, biz_no):
                         tqdm.write(f" 중복 발견 : {comp_name}")
+                        break
 
                     open_card(self.driver, card)
                     detail = self.extractor.extract(card)
