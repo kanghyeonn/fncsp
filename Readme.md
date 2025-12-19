@@ -50,7 +50,8 @@ crawler-system/
 │
 ├── make_comp_data              # mysql 데이터를 삽입
 │   ├── insert_data_to_cmp_financial.py # 재무데이터 테이블 
-│   └── insert_data_to_fs_account_code.py # 재무데이터 코드명 매핑 테이블
+│   ├── insert_data_to_tm_cretop_cd.py # 재무데이터 코드명 매핑 테이블
+│   └── insert_data_to_es.py      # 재무데이터를 Elasticsearch에 적재
 │
 ├── repositories/                  # 데이터 저장소
 │   ├── base_repository.py        # 저장소 베이스
@@ -248,18 +249,18 @@ curl -X PUT "localhost:9200/source_data" -H 'Content-Type: application/json' -d'
 
 ### KIPRIS 크롤러
 
-```bash
+```cmd (이 방법으로 실행!!!)
 # 특허 정보 수집
-python -m crawlers.kipris.patent
+python main.py kipris-patent
 
 # 실용신안 수집
-python -m crawlers.kipris.utility
+python main.py kipris-utility
 
 # 디자인 수집
-python -m crawlers.kipris.design
+python main.py kipris-design
 
 # 상표 수집
-python -m crawlers.kipris.trademark
+python main.py kipris-trademark
 ```
 
 **예상 출력:**
@@ -289,12 +290,12 @@ KIPRIS_PATENT 수집: 100%|██████████| 100/100 [01:30:45<00:
 
 ### NAVER 크롤러
 
-```bash
+```cmd (이 방법으로 실행!!!)
 # 뉴스 수집 (기본: 최근 365일)
-python -m crawlers.naver.news
+python main.py naver-news
 
 # 트렌드 수집 (기본: 2022-01-01부터 현재까지)
-python -m crawlers.naver.trend
+python main.py naver-trend
 ```
 
 **프로그래밍 방식:**
@@ -316,15 +317,15 @@ trend_crawler.run()
 
 ### NTIS 크롤러
 
-```bash
+```cmd (이 방법으로 실행!!!)
 # 과제 정보 수집
-python -m crawlers.ntis.assign
+python main.py ntis-assign
 
 # 연구보고서 수집
-python -m crawlers.ntis.rnd_paper
+python main.py ntis-rnd-paper
 
 # 수행기관 정보 수집
-python -m crawlers.ntis.org_info
+python main.py ntis-org-info
 ```
 
 ### 배치 실행 예시
@@ -441,6 +442,7 @@ curl -X GET "localhost:9200/source_data/_search?pretty"
 1. **환경 변수**: `.env` 파일이 올바르게 설정되어 있는지 확인
 2. **DB 연결**: MySQL과 Elasticsearch가 실행 중인지 확인
 3. **API 키**: NTIS API 키가 유효한지 확인
-4. **ChromeDriver**: KIPRIS 크롤러 실행 시 ChromeDriver 필요
+4. **ChromeDriver**: KIPRIS 크롤러 실행 시 ChromeDriver 및 ChromeDriver 버전 확인 필요 
 5. **Rate Limit**: NAVER API는 일일 호출 제한이 있을 수 있음
+
 
