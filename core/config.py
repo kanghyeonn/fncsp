@@ -14,9 +14,15 @@ class RepositoryConfig:
 
     def __init__(self):
         if not hasattr(self, '_initialized'):
+            # 개발 elasticsearch
             self.es_host = os.getenv('ELASTICSEARCH_HOST')
             self.es_id = os.getenv('ELASTICSEARCH_ID')
             self.es_password = os.getenv('ELASTICSEARCH_PASSWORD')
+
+            # 운영 elasticsearch
+            # self.es_host = os.getenv('PROD_ELASTICSEARCH_HOST')
+            # self.es_id = os.getenv('PROD_ELASTICSEARCH_ID')
+            # self.es_password = os.getenv('PROD_ELASTICSEARCH_PASSWORD')
 
             # fncsp db
             # self.mysql_host = os.getenv('LOCAL_MYSQL_HOST')

@@ -65,13 +65,13 @@ code_counter = {
 # -------------------------------------------------------
 # 3. 폴더 전체에서 계정명 + 재무제표명 추출
 # -------------------------------------------------------
-base = Path("KODATA수집")
+base = Path("../../insert_data_to_es/cmp_fnl_data")
 rows = []
 
 for path in base.rglob("*.xlsx"):
     file_name = path.name
 
-    if "dic" in file_name.lower():
+    if "cmp_fnl_data" in file_name.lower():
         continue
 
     try:

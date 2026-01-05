@@ -200,7 +200,7 @@ def process_metrics(biz_no, base_date):
 # -------------------------------------------------------
 # 메인 ETL
 # -------------------------------------------------------
-BASE_DIR = Path("KODATA수집")
+BASE_DIR = Path("../../insert_data_to_es/cmp_fnl_data")
 
 for file in BASE_DIR.rglob("*.xlsx"):
     parts = file.stem.split("_")
