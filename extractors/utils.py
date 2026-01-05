@@ -15,7 +15,7 @@ class WebDriverManager:
         opts = uc.ChromeOptions()
 
         # 헤드리스 모드
-        # opts.add_argument("--headless=new")
+        opts.add_argument("--headless=new")
 
         # 우분투/Docker 환경 대응
         # opts.add_argument("--no-sandbox")

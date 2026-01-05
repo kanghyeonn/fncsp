@@ -444,5 +444,6 @@ curl -X GET "localhost:9200/source_data/_search?pretty"
 3. **API 키**: NTIS API 키가 유효한지 확인
 4. **ChromeDriver**: KIPRIS 크롤러 실행 시 ChromeDriver 및 ChromeDriver 버전 확인 필요 
 5. **Rate Limit**: NAVER API는 일일 호출 제한이 있을 수 있음
-
+6. repositories/elasticsearch_repository의 **_index_name** 확인
+7. core/config의 **env설정** 확인
 

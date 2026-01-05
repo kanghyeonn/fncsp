@@ -12,7 +12,7 @@ class ElasticsearchRepository(BaseRepository):
         # connection
         self._es: Optional[Elasticsearch] = None
         # 인덱스 이름
-        self._index_name = "source_data_dic"
+        self._index_name = "source_data"
 
     def connect(self):
         if self._is_connected:
